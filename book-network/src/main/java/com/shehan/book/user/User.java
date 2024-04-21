@@ -2,6 +2,8 @@ package com.shehan.book.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,8 +42,11 @@ public class User implements UserDetails, Principal {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
+    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
+
+    @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
 
