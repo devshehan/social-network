@@ -1,10 +1,10 @@
 package com.shehan.book.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.shehan.book.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import com.shehan.book.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.shehan.book.entity.feedback;
 
 import com.shehan.book.entity.common.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

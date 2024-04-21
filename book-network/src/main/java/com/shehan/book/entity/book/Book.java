@@ -1,8 +1,7 @@
 package com.shehan.book.entity.book;
 
 import com.shehan.book.entity.common.BaseEntity;
-import com.shehan.book.user.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
