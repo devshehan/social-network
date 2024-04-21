@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Account Activation Email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .greeting {
+            color: #333;
+            font-size: 16px;
+        }
+        .activation-code {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: center;
+        }
+        .activation-link a {
+            display: inline-block;
+            color: #fff;
+            background-color: #3498db;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .activation-link a:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>Account Activation</h1>
+    <p class="greeting" th:text=" 'Hello' + ${username} + ','"></p>
+    <p>Thank you for signing up! Please use the following activation code to activate your account</p>
+    <div class="activation-code"><span th:text="${activation_code}"></span></div>
+    <div class="activation-link">
+        <a th:href="${confirmationUrl}" target="_blank">Activate your Account</a>
+    </div>
+</div>
+</body>
+</html>

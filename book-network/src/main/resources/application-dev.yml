@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/book_social_network
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: localhost
+    port: 1025
+    username: shehan
+    password: shehanbook_social_network
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        strttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+application:
+  security:
+    jwt:
+      secret-key: "c1aea228f0ae72f443a09c75a04da4988706a7330eb284afa1ae2cd2dbca6fc8"
+      expiration: 88400000 #one day
+      refresh-token:
+        expiration: 604800000
+  mailing:
+    front-end:
+      activation-url: http://localhost/4200
+
+server:
+  port: 8080
