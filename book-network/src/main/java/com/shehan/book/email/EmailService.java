@@ -23,18 +23,18 @@ public class EmailService {
 
     @Async
     public void sendEmail(
-        String to,
-        String username,
-        EmailTemplateName emailTemplate,
-        String confirmationUrl,
-        String activationCode,
-        String subject
+            String to,
+            String username,
+            EmailTemplateName emailTemplate,
+            String confirmationUrl,
+            String activationCode,
+            String subject
     ) throws MessagingException {
 
         String templateName;
-        if(emailTemplate == null){
+        if (emailTemplate == null) {
             templateName = "confirm-email";
-        }else{
+        } else {
             templateName = emailTemplate.getName();
         }
 
@@ -57,9 +57,9 @@ public class EmailService {
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject(subject);
 
-        String template = templateEngine.process(templateName,context);
+        String template = templateEngine.process(templateName, context);
 
-        mimeMessageHelper.setText(template,true);
+        mimeMessageHelper.setText(template, true);
 
         javaMailSender.send(mimeMessage);
 

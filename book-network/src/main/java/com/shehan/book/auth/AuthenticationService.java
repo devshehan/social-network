@@ -70,7 +70,7 @@ public class AuthenticationService {
     private void sendValidationEmail(User user) throws MessagingException {
         var newToken = generateAndSaveActivationToken(user);
 
-        log.info("sendValidationEmail.method: {}",newToken);
+        log.info("sendValidationEmail.method: {}", newToken);
         emailService.sendEmail(
                 user.getEmail(),
                 user.fullName(),
@@ -98,7 +98,7 @@ public class AuthenticationService {
         String characters = "0123456789";
         StringBuilder codeBuilder = new StringBuilder();
         SecureRandom secureRandom = new SecureRandom();
-        for(int i=0; i<length; i++){
+        for (int i = 0; i < length; i++) {
             int randomIndex = secureRandom.nextInt(characters.length());
             codeBuilder.append(characters.charAt(randomIndex));
         }
@@ -113,10 +113,10 @@ public class AuthenticationService {
                 )
         );
         var claims = new HashMap<String, Object>();
-        var user = ((User)auth.getPrincipal());
+        var user = ((User) auth.getPrincipal());
         claims.put("fullName", user.fullName());
 
-        var jwtToken = jwtService.generateToken(claims,user);
+        var jwtToken = jwtService.generateToken(claims, user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthenticateResponse.builder()
@@ -129,7 +129,7 @@ public class AuthenticationService {
         Token savedToken = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid Token"));
 
-        if(LocalDateTime.now().isAfter(savedToken.getExpiredAt())){
+        if (LocalDateTime.now().isAfter(savedToken.getExpiredAt())) {
             sendValidationEmail(savedToken.getUser());
             throw new RuntimeException("Activation token has expired, a new token has sent");
         }
@@ -149,21 +149,21 @@ public class AuthenticationService {
         final String authHeader = request.getHeader(AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
         refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(refreshToken);
-        if(userEmail != null){
+        if (userEmail != null) {
             UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(userEmail);
 
-            if(jwtService.isTokenValid(refreshToken,userDetails)){
+            if (jwtService.isTokenValid(refreshToken, userDetails)) {
                 var accessToken = jwtService.generateToken(userDetails);
                 var authResponse = AuthenticateResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
-                new ObjectMapper().writeValue(response.getOutputStream(),authResponse);
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
 
         }

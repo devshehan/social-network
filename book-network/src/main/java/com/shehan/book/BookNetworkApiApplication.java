@@ -12,25 +12,27 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EnableAsync
 public class BookNetworkApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BookNetworkApiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BookNetworkApiApplication.class, args);
+    }
 
-	@Bean
-	public CommandLineRunner runner(RoleRepository roleRepository){
-		return args -> {
-			if( roleRepository.findByName("USER").isEmpty()){
-				roleRepository.save(
-						Role.builder()
-								.name("USER")
-								.createdDate(LocalDateTime.now())
-								.build()
-				);
-			}
-		};
-	};
+    @Bean
+    public CommandLineRunner runner(RoleRepository roleRepository) {
+        return args -> {
+            if (roleRepository.findByName("USER").isEmpty()) {
+                roleRepository.save(
+                        Role.builder()
+                                .name("USER")
+                                .createdDate(LocalDateTime.now())
+                                .build()
+                );
+            }
+        };
+    }
+
+    ;
 }

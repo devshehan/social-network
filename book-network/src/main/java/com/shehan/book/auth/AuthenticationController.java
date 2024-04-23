@@ -33,7 +33,7 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<AuthenticateResponse> authenticate(
             @RequestBody @Valid AuthenticateRequest request
-    ){
+    ) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
@@ -49,7 +49,7 @@ public class AuthenticationController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
-        authenticationService.refreshToken(request,response);
+        authenticationService.refreshToken(request, response);
     }
 }
 

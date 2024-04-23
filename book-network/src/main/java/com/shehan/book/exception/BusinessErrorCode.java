@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum BusinessErrorCode {
 
-    NO_CODE(0,HttpStatus.NOT_IMPLEMENTED, "No code"),
-    ACCOUNT_LOCKED(302,HttpStatus.FORBIDDEN, "User account is locked"),
+    NO_CODE(0, HttpStatus.NOT_IMPLEMENTED, "No code"),
+    ACCOUNT_LOCKED(302, HttpStatus.FORBIDDEN, "User account is locked"),
     ;
 
     private final int code;

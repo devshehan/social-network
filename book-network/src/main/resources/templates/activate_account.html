@@ -6,10 +6,12 @@
         body {
             font-family: Arial, sans-serif;
         }
+
         .greeting {
             color: #333;
             font-size: 16px;
         }
+
         .activation-code {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
@@ -18,6 +20,7 @@
             font-size: 18px;
             text-align: center;
         }
+
         .activation-link a {
             display: inline-block;
             color: #fff;
@@ -27,6 +30,7 @@
             border-radius: 4px;
             margin-top: 20px;
         }
+
         .activation-link a:hover {
             background-color: #2980b9;
         }
@@ -39,7 +43,7 @@
     <p>Thank you for signing up! Please use the following activation code to activate your account</p>
     <div class="activation-code"><span th:text="${activation_code}"></span></div>
     <div class="activation-link">
-        <a th:href="${confirmationUrl}" target="_blank">Activate your Account</a>
+        <a target="_blank" th:href="${confirmationUrl}">Activate your Account</a>
     </div>
 </div>
 </body>

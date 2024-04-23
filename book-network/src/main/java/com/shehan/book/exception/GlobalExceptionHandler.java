@@ -15,7 +15,7 @@ import java.util.Set;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(LockedException.class)
-    public ResponseEntity<ExceptionResponse> handleException(LockedException exc){
+    public ResponseEntity<ExceptionResponse> handleException(LockedException exc) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MessagingException.class)
-    public ResponseEntity<ExceptionResponse> handleException(MessagingException exc){
+    public ResponseEntity<ExceptionResponse> handleException(MessagingException exc) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException exc){
+    public ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException exc) {
 
         Set<String> errors = new HashSet<>();
         exc.getBindingResult().getAllErrors()
@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleException(Exception exc){
+    public ResponseEntity<ExceptionResponse> handleException(Exception exc) {
         exc.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

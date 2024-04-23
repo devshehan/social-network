@@ -18,20 +18,18 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    @Value("${application.security.jwt.secret-key}")
+    String secretKey;
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
-
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long jwtRefreshExpiration;
 
-    @Value("${application.security.jwt.secret-key}")
-    String secretKey;
-
-    public String extractUsername(String jwt){
+    public String extractUsername(String jwt) {
         return extractClaim(jwt, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimResolver){
+    public <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
@@ -44,16 +42,16 @@ public class JwtService {
                 .getBody();
     }
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateRefreshToken(UserDetails userDetails){
+    public String generateRefreshToken(UserDetails userDetails) {
         return buildToken(new HashMap<>(), userDetails, jwtRefreshExpiration);
     }
 
-    public String generateToken(Map<String,Object> claims, UserDetails userDetails) {
-        return buildToken(claims,userDetails,jwtExpiration);
+    public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
+        return buildToken(claims, userDetails, jwtExpiration);
     }
 
     private String buildToken(
@@ -77,7 +75,7 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails){
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }

@@ -4,10 +4,7 @@ import com.shehan.book.entity.common.BaseEntity;
 import com.shehan.book.entity.feedback.FeedBack;
 import com.shehan.book.entity.history.BookTransactionHistory;
 import com.shehan.book.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,4 +38,19 @@ public class Book extends BaseEntity {
 
     @OneToMany(mappedBy = "book")
     private List<BookTransactionHistory> bookTransactionHistories;
+
+    @Transient
+    public double getRate() {
+        if (feedBacks == null || feedBacks.isEmpty()) {
+            return 0.0;
+        }
+
+        var rate = feedBacks.stream()
+                .mapToDouble(FeedBack::getNote)
+                .average()
+                .orElse(0.0);
+
+        double roundedRate = Math.round(rate * 10.0) / 10.0;
+        return roundedRate;
+    }
 }
