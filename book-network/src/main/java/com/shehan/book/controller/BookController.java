@@ -5,7 +5,9 @@ import com.shehan.book.dto.BorrowedBookResponse;
 import com.shehan.book.dto.record.BookRequest;
 import com.shehan.book.service.BookService;
 import com.shehan.book.util.PageResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -113,6 +115,40 @@ public class BookController {
         return ResponseEntity.ok(bookService.approveReturnBorrowBook(bookId,connectedUser));
     }
 
+    @PostMapping(value = "/cover/{book-id}", consumes = "multipart/form-data")
+    public ResponseEntity<?> uploadBookCoverPicture(
+            @PathVariable("book-id") Long bookId,
+            @Parameter
+            @RequestPart("file") MultipartFile file,
+            Authentication connectedUser
+    ){
+        bookService.uploadBookCoverPicture(bookId,file,connectedUser);
+        return ResponseEntity.accepted().build();
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

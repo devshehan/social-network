@@ -6,12 +6,14 @@ import com.shehan.book.dto.record.BookRequest;
 import com.shehan.book.entity.book.Book;
 import com.shehan.book.entity.history.BookTransactionHistory;
 import com.shehan.book.exception.OperationNotPermittedException;
+import com.shehan.book.file.FileStorageService;
 import com.shehan.book.mapper.BookMapper;
 import com.shehan.book.repository.BookRepository;
 import com.shehan.book.repository.BookTransactionHistoryRepository;
 import com.shehan.book.user.User;
 import com.shehan.book.util.BookSpecification;
 import com.shehan.book.util.PageResponse;
+import jakarta.mail.Multipart;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +34,7 @@ public class BookService {
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
     private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
+    private final FileStorageService fileStorageService;
 
     public Long saveBook(BookRequest request, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
@@ -239,6 +243,18 @@ public class BookService {
 
         bookTransactionHistory.setReturnApproved(true);
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
+    }
+
+    public void uploadBookCoverPicture(
+            Long bookId,
+            MultipartFile file,
+            Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with ID : " + bookId));
+        User user = ((User) connectedUser.getPrincipal());
+        var bookCover = fileStorageService.saveFile(file,user.getId());
+        book.setBookCover(bookCover);
+        bookRepository.save(book);
     }
 }
 
