@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BookTransactionHistoryRepository extends JpaRepository<BookTransactionHistory,Long> {
 
@@ -39,4 +41,26 @@ public interface BookTransactionHistoryRepository extends JpaRepository<BookTran
             AND BookTransactionHistory.returnApproved = false
             """)
     boolean isAlreadyBorrowed(Long bookId, Long userId);
+
+    @Query("""
+            SELECT transaction
+            FROM BookTransactionHistory transaction
+            WHERE transaction.book.id = :bookId
+            AND transaction.user.id = :id
+            AND transaction.returnApproved = false
+            AND transaction.returned = false
+            """)
+    Optional<BookTransactionHistory> findBookIdAndUserId(Long bookId, Long userId);
+
+    @Query("""
+            SELECT transaction
+            FROM BookTransactionHistory transaction
+            WHERE transaction.book.id = :bookId
+            AND transaction.book.owner.id = :ownerId
+            AND transaction.returned = true
+            AND transaction.returnApproved = false
+            """)
+    Optional<BookTransactionHistory> findBookIdAndOwnerId(
+            Long bookId,
+            Long ownerId);
 }

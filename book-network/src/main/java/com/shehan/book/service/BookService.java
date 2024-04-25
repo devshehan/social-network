@@ -159,7 +159,6 @@ public class BookService {
             Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with ID : " + bookId));
-        book.setShareable(true);
         User user = ((User) connectedUser.getPrincipal());
 
         if(!Objects.equals(book.getOwner().getId(),user.getId())){
@@ -175,7 +174,6 @@ public class BookService {
             Authentication connectedUser) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("No book found with ID : " + bookId));
-        book.setShareable(true);
         User user = ((User) connectedUser.getPrincipal());
         if( book.isArchived() || !book.isShareable()){
             throw new OperationNotPermittedException("You are not allowed to change borrow" +
@@ -197,6 +195,49 @@ public class BookService {
                 .returned(false)
                 .returnApproved(false)
                 .build();
+        return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
+    }
+
+    public Long returnBorrowBook(
+            Long bookId,
+            Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with ID : " + bookId));
+        User user = ((User) connectedUser.getPrincipal());
+
+        if (book.isArchived() || !book.isShareable()) {
+            throw new OperationNotPermittedException("You are not allowed to change borrow" +
+                    " this until archived or shareable status change");
+        }
+        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You can not return your own book");
+        }
+        BookTransactionHistory bookTransactionHistory = bookTransactionHistoryRepository
+                .findBookIdAndUserId(bookId, user.getId())
+                .orElseThrow(() -> new OperationNotPermittedException("There is not borrowing of this book"));
+        bookTransactionHistory.setReturned(true);
+        return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
+    }
+
+    public Long approveReturnBorrowBook(
+            Long bookId,
+            Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with ID : " + bookId));
+        User user = ((User) connectedUser.getPrincipal());
+
+        if (book.isArchived() || !book.isShareable()) {
+            throw new OperationNotPermittedException("You are not allowed to change approve" +
+                    " this until archived or shareable status change");
+        }
+        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You can not approve your own book");
+        }
+        BookTransactionHistory bookTransactionHistory = bookTransactionHistoryRepository
+                .findBookIdAndOwnerId(bookId, user.getId())
+                .orElseThrow(() -> new OperationNotPermittedException("There is no return book to approved"));
+
+        bookTransactionHistory.setReturnApproved(true);
         return bookTransactionHistoryRepository.save(bookTransactionHistory).getId();
     }
 }

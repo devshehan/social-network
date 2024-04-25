@@ -71,7 +71,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.findAllReturnedBooks(page,size,connectedUser));
     }
 
-    @PatchMapping("shareable/{book-id}")
+    @PatchMapping("/shareable/{book-id}")
     public ResponseEntity<Long> updateShareableStatus(
             @PathVariable("book-id") Long bookId,
             Authentication connectedUser
@@ -80,7 +80,7 @@ public class BookController {
     }
 
 
-    @PatchMapping("archive/{book-id}")
+    @PatchMapping("/archive/{book-id}")
     public ResponseEntity<Long> updateArchiveStatus(
             @PathVariable("book-id") Long bookId,
             Authentication connectedUser
@@ -89,13 +89,30 @@ public class BookController {
     }
 
 
-    @PatchMapping("borrow/{book-id}")
+    @PatchMapping("/borrow/{book-id}")
     public ResponseEntity<Long> borrowBook(
             @PathVariable("book-id") Long bookId,
             Authentication connectedUser
     ){
         return ResponseEntity.ok(bookService.borrowBook(bookId,connectedUser));
     }
+
+    @PatchMapping("/borrow/return/{book-id}")
+    public ResponseEntity<Long> returnBorrowBook(
+            @PathVariable("book-id") Long bookId,
+            Authentication connectedUser
+    ){
+        return ResponseEntity.ok(bookService.returnBorrowBook(bookId,connectedUser));
+    }
+
+    @PatchMapping("/borrow/return/approve/{book-id}")
+    public ResponseEntity<Long> approveReturnBorrowBook(
+            @PathVariable("book-id") Long bookId,
+            Authentication connectedUser
+    ){
+        return ResponseEntity.ok(bookService.approveReturnBorrowBook(bookId,connectedUser));
+    }
+
 }
 
 
