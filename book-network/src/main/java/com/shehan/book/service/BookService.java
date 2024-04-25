@@ -5,6 +5,7 @@ import com.shehan.book.dto.BorrowedBookResponse;
 import com.shehan.book.dto.record.BookRequest;
 import com.shehan.book.entity.book.Book;
 import com.shehan.book.entity.history.BookTransactionHistory;
+import com.shehan.book.exception.OperationNotPermittedException;
 import com.shehan.book.mapper.BookMapper;
 import com.shehan.book.repository.BookRepository;
 import com.shehan.book.repository.BookTransactionHistoryRepository;
@@ -21,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -135,4 +137,51 @@ public class BookService {
                 bookTransactionHistories.isLast()
         );
     }
+
+    public Long updateShareableStatus(
+            Long bookId,
+            Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with ID : " + bookId));
+        book.setShareable(true);
+        User user = ((User) connectedUser.getPrincipal());
+
+        if(!Objects.equals(book.getOwner().getId(),user.getId())){
+            throw new OperationNotPermittedException("You are not allowed to change the shareable status");
+        }
+        book.setShareable(!book.isShareable());
+        bookRepository.save(book);
+        return bookId;
+    }
+
+    public Long updateArchiveStatus(
+            Long bookId,
+            Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with ID : " + bookId));
+        book.setShareable(true);
+        User user = ((User) connectedUser.getPrincipal());
+
+        if(!Objects.equals(book.getOwner().getId(),user.getId())){
+            throw new OperationNotPermittedException("You are not allowed to change archived status");
+        }
+        book.setArchived(!book.isArchived());
+        bookRepository.save(book);
+        return bookId;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
