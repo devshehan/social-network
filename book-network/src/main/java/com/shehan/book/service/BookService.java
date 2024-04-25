@@ -1,11 +1,15 @@
 package com.shehan.book.service;
 
 import com.shehan.book.dto.BookResponse;
+import com.shehan.book.dto.BorrowedBookResponse;
 import com.shehan.book.dto.record.BookRequest;
 import com.shehan.book.entity.book.Book;
+import com.shehan.book.entity.history.BookTransactionHistory;
 import com.shehan.book.mapper.BookMapper;
 import com.shehan.book.repository.BookRepository;
+import com.shehan.book.repository.BookTransactionHistoryRepository;
 import com.shehan.book.user.User;
+import com.shehan.book.util.BookSpecification;
 import com.shehan.book.util.PageResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ public class BookService {
 
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
+    private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
 
     public Long saveBook(BookRequest request, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
@@ -57,6 +62,77 @@ public class BookService {
                 books.getTotalPages(),
                 books.isFirst(),
                 books.isLast()
+        );
+    }
+
+    public PageResponse<BookResponse> findAllBooksByOwner(
+            int page,
+            int size,
+            Authentication connectedUser) {
+        User user = ((User) connectedUser.getPrincipal());
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdDate").descending());
+        Page<Book> books = bookRepository.findAll(BookSpecification.withOwnerId(user.getId()),pageable);
+
+        List<BookResponse> bookResponseList = books.stream()
+                .map(bookMapper::toBookResponse)
+                .toList();
+
+        return new PageResponse<>(
+                bookResponseList,
+                books.getNumber(),
+                books.getSize(),
+                books.getTotalElements(),
+                books.getTotalPages(),
+                books.isFirst(),
+                books.isLast()
+        );
+
+    }
+
+    public PageResponse<BorrowedBookResponse> findAllBorrowedBooks(
+            int page,
+            int size,
+            Authentication connectedUser) {
+        User user = ((User) connectedUser.getPrincipal());
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdDate").descending());
+        Page<BookTransactionHistory> bookTransactionHistories
+                = bookTransactionHistoryRepository.findAllBorrowedBooks(pageable,user.getId());
+
+        List<BorrowedBookResponse> bookResponseList = bookTransactionHistories.stream()
+                .map(bookMapper::toBookBorrowedResponse)
+                .toList();
+        return new PageResponse<>(
+                bookResponseList,
+                bookTransactionHistories.getNumber(),
+                bookTransactionHistories.getSize(),
+                bookTransactionHistories.getTotalElements(),
+                bookTransactionHistories.getTotalPages(),
+                bookTransactionHistories.isFirst(),
+                bookTransactionHistories.isLast()
+        );
+    }
+
+    public PageResponse<BorrowedBookResponse> findAllReturnedBooks(
+            int page,
+            int size,
+            Authentication connectedUser) {
+
+        User user = ((User) connectedUser.getPrincipal());
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdDate").descending());
+        Page<BookTransactionHistory> bookTransactionHistories
+                = bookTransactionHistoryRepository.findAllReturnedBooks(pageable,user.getId());
+
+        List<BorrowedBookResponse> bookResponseList = bookTransactionHistories.stream()
+                .map(bookMapper::toBookBorrowedResponse)
+                .toList();
+        return new PageResponse<>(
+                bookResponseList,
+                bookTransactionHistories.getNumber(),
+                bookTransactionHistories.getSize(),
+                bookTransactionHistories.getTotalElements(),
+                bookTransactionHistories.getTotalPages(),
+                bookTransactionHistories.isFirst(),
+                bookTransactionHistories.isLast()
         );
     }
 }

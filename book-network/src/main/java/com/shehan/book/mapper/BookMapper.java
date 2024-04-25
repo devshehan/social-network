@@ -1,8 +1,10 @@
 package com.shehan.book.mapper;
 
 import com.shehan.book.dto.BookResponse;
+import com.shehan.book.dto.BorrowedBookResponse;
 import com.shehan.book.dto.record.BookRequest;
 import com.shehan.book.entity.book.Book;
+import com.shehan.book.entity.history.BookTransactionHistory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,6 +34,19 @@ public class BookMapper {
                 .owner(book.getOwner().fullName())
                 .archived(book.isArchived())
                 .shareable(book.isShareable())
+                .build();
+    }
+
+    public BorrowedBookResponse toBookBorrowedResponse(
+            BookTransactionHistory bookTransactionHistory) {
+        return BorrowedBookResponse.builder()
+                .id(bookTransactionHistory.getBook().getId())
+                .title(bookTransactionHistory.getBook().getTitle())
+                .authorName(bookTransactionHistory.getBook().getAuthorName())
+                .isbn(bookTransactionHistory.getBook().getIsbn())
+                .rate(bookTransactionHistory.getBook().getRate())
+                .returned(bookTransactionHistory.isReturned())
+                .returnApproved(bookTransactionHistory.isReturnApproved())
                 .build();
     }
 }

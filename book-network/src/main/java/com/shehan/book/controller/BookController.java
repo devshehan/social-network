@@ -1,6 +1,7 @@
 package com.shehan.book.controller;
 
 import com.shehan.book.dto.BookResponse;
+import com.shehan.book.dto.BorrowedBookResponse;
 import com.shehan.book.dto.record.BookRequest;
 import com.shehan.book.service.BookService;
 import com.shehan.book.util.PageResponse;
@@ -41,6 +42,33 @@ public class BookController {
             Authentication connectedUser
     ) {
         return ResponseEntity.ok(bookService.getAllBooks(page, size, connectedUser));
+    }
+
+    @GetMapping("/owner")
+    public ResponseEntity<PageResponse<BookResponse>> findAllBooksByOwner(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+            Authentication connectedUser
+    ){
+        return ResponseEntity.ok(bookService.findAllBooksByOwner(page,size,connectedUser));
+    }
+
+    @GetMapping("/borrowed")
+    public ResponseEntity<PageResponse<BorrowedBookResponse>> findAllBorrowedBooks(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+            Authentication connectedUser
+    ){
+        return ResponseEntity.ok(bookService.findAllBorrowedBooks(page,size,connectedUser));
+    }
+
+    @GetMapping("/returned")
+    public ResponseEntity<PageResponse<BorrowedBookResponse>> findAllReturnedBooks(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+            Authentication connectedUser
+    ){
+        return ResponseEntity.ok(bookService.findAllReturnedBooks(page,size,connectedUser));
     }
 
 
