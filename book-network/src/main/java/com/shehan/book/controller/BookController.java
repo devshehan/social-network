@@ -87,6 +87,15 @@ public class BookController {
     ){
         return ResponseEntity.ok(bookService.updateArchiveStatus(bookId,connectedUser));
     }
+
+
+    @PatchMapping("borrow/{book-id}")
+    public ResponseEntity<Long> borrowBook(
+            @PathVariable("book-id") Long bookId,
+            Authentication connectedUser
+    ){
+        return ResponseEntity.ok(bookService.borrowBook(bookId,connectedUser));
+    }
 }
 
 
